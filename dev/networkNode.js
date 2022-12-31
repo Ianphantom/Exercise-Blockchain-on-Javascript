@@ -90,9 +90,35 @@ app.post("/register-and-broadcast-node", function (req, res) {
     });
 });
 
-app.post("/register-node", function (req, res) {});
+app.post("/register-node", function (req, res) {
+  const newNodeUrl = req.body.newNodeUrl;
+  const nodeNotAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1;
+  const notCurrentNode = bitcoin.currrentNodeUrl !== newNodeUrl;
 
-app.post("register-nodes-bulk", function (req, res) {});
+  if (nodeNotAlreadyPresent && notCurrentNode)
+    bitcoin.networkNodes.push(newNodeUrl);
+
+  res.json({
+    note: "New Node Registered Succesfully with node",
+  });
+});
+
+app.post("/register-nodes-bulk", function (req, res) {
+  const allNetworkNodes = req.body.allNetworkNodes;
+
+  allNetworkNodes.forEach((networkNodesUrl) => {
+    const nodeNotAlreadyPresent =
+      bitcoin.networkNodes.indexOf(networkNodesUrl) == -1;
+    const notCurrentNode = bitcoin.currrentNodeUrl !== networkNodesUrl;
+
+    if (nodeNotAlreadyPresent && notCurrentNode)
+      bitcoin.networkNodes.push(networkNodesUrl);
+  });
+
+  res.json({
+    note: "Bulk Registration Successfull",
+  });
+});
 
 app.listen(port, function () {
   console.log(`listening on port ${port}`);
