@@ -18,7 +18,7 @@ Blockchain.prototype.createNewBlock = function (
   const newBlock = {
     index: this.chain.length + 1,
     timestamp: Date.now(),
-    transcations: this.pendingTransactions,
+    transaction: this.pendingTransactions,
     nonce: nonce,
     hash: hash,
     previousBlockHash: previousBlockHash,
@@ -81,6 +81,44 @@ Blockchain.prototype.proofOfWork = function (
   }
 
   return nonce;
+};
+
+Blockchain.prototype.chainIsValid = function (blockchain) {
+  let validChain = true;
+  for (let i = 1; i < blockchain.length; i++) {
+    const currentBlock = blockchain[i];
+    const previousBlock = blockchain[i - 1];
+    const dataHash = {
+      transaction: currentBlock["transaction"],
+      index: currentBlock["index"],
+    };
+    const blockHash = this.hashBlock(
+      previousBlock["hash"],
+      dataHash,
+      currentBlock["nonce"]
+    );
+
+    if (blockHash.substring(0, 4) !== "0000") validChain = false;
+    if (currentBlock["previousBlockHash"] !== previousBlock["hash"])
+      validChain = false;
+
+    // console.log(validChain);
+
+    const genesisBlock = blockchain[0];
+    const correctNonce = genesisBlock["nonce"] === 100;
+    const correctPreviousBlockHash = genesisBlock["previousBlockHash"] === "0";
+    const correctHash = genesisBlock["hash"] === "0";
+    const correctTransactions = genesisBlock["transaction"].length === 0;
+
+    if (
+      !correctNonce ||
+      !correctPreviousBlockHash ||
+      !correctHash ||
+      !correctTransactions
+    )
+      validChain = false;
+  }
+  return validChain;
 };
 
 module.exports = Blockchain;

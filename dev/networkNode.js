@@ -63,8 +63,8 @@ app.get("/mine", function (req, res) {
     index: lastBlock["index"] + 1,
   };
 
-  const nonce = bitcoin.proofOfWork(lastBlock, currentBlockData);
-  const blockcHash = bitcoin.hashBlock(lastBlock, currentBlockData, nonce);
+  const nonce = bitcoin.proofOfWork(hash, currentBlockData);
+  const blockcHash = bitcoin.hashBlock(hash, currentBlockData, nonce);
   const newBlock = bitcoin.createNewBlock(nonce, hash, blockcHash);
 
   const requestPromises = [];
@@ -101,6 +101,8 @@ app.get("/mine", function (req, res) {
       res.json({
         note: "New Block mined succesfuully",
         block: newBlock,
+        currentBlockData: currentBlockData,
+        nonce: nonce,
       });
     });
 });
