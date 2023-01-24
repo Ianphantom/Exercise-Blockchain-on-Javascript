@@ -53,8 +53,8 @@ const bc1 = {
 
 console.log(bitcoin.chainIsValid(bc1.chain));
 
-// console.log(bitcoin.proofOfWork(lastBlock, currentBlockData));
+console.log(bitcoin.proofOfWork(lastBlock, currentBlockData));
 
-// console.log(bitcoin.hashBlock("0", currentBlockData, 96802));
+console.log(bitcoin.hashBlock("0", currentBlockData, 96802));
 
-// console.log(bitcoin);
+console.log(bitcoin);
